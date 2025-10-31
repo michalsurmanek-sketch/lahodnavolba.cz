@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lahodná volba – magazín a výběr delikates</title>
+  <meta name="description" content="Lahodná volba – magazín o chuti a stylu. Recenze, recepty, výběr delikates, káva, rumy, vína a dárkové sady." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Lahodná volba" />
+  <meta property="og:description" content="Magazín o chuti a stylu. Vybíráme to nejlepší – káva, rumy, vína, delikatesy." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.lahodnavolba.cz/" />
+
+  <!-- Google Fonts (CZ diakritika) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#faf7f2;           /* teplé, krémové pozadí */
+      --ink:#212121;          /* text */
+      --muted:#6b6b6b;        /* sekundární text */
+      --brand:#7b4b2a;        /* kávově hnědá */
+      --accent:#b98a5d;       /* zlatavá */
+      --card:#ffffff;         /* karty */
+      --line:#e7e0d7;         /* linky */
+      --ok:#2e7d32;           /* potvrzovací prvky */
+      --err:#c62828;          /* chybové prvky */
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:Roboto,system-ui,-apple-system,Segoe UI,Arial;line-height:1.6;background:var(--bg);color:var(--ink)}
+
+    /* Layout helpers */
+    .container{max-width:1200px;margin-inline:auto;padding:0 20px}
+    .grid{display:grid;gap:20px}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media (max-width:1024px){.grid-4{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:768px){.grid-3,.grid-4{grid-template-columns:1fr 1fr}}
+    @media (max-width:560px){.grid-3,.grid-4{grid-template-columns:1fr}}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:50;background:rgba(250,247,242,.9);backdrop-filter:saturate(120%) blur(6px);border-bottom:1px solid var(--line)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+    .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),#3b2415);display:grid;place-items:center;color:#fff;font-weight:900}
+    .brand .title{font-weight:900;letter-spacing:.2px}
+
+    nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
+    nav a{color:var(--ink);text-decoration:none;font-weight:500}
+    nav a:hover{color:var(--brand)}
+
+    /* Hamburger */
+    .hamb{display:none;gap:10px;align-items:center}
+    .hamb button{appearance:none;border:1px solid var(--line);background:var(--card);padding:10px 12px;border-radius:10px}
+    @media (max-width:920px){
+      nav{display:none}
+      .hamb{display:flex}
+    }
+    .mobile-menu{position:fixed;inset:0 0 auto 0;top:60px;background:var(--card);border-top:1px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,.08);display:none}
+    .mobile-menu.open{display:block;animation:pop .18s ease-out}
+    .mobile-menu a{display:block;padding:14px 20px;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none}
+    .mobile-menu a:active,.mobile-menu a:hover{background:#fff5eb;color:var(--brand)}
+    @keyframes pop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Hero */
+    .hero{position:relative;isolation:isolate}
+    .hero-wrap{display:grid;grid-template-columns:1.2fr .8fr;align-items:center;gap:32px;padding:46px 0}
+    @media (max-width:920px){.hero-wrap{grid-template-columns:1fr}}
+    .badge{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:.9rem}
+    .h1{font-size:clamp(28px,4vw,44px);line-height:1.15;margin:10px 0 14px;font-weight:900}
+    .lead{color:var(--muted);font-size:1.05rem}
+    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+    .btn{appearance:none;border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}
+    .btn-brand{background:var(--brand);color:#fff}
+    .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+    .hero-art{position:relative;height:360px;border-radius:18px;background:linear-gradient(135deg,#efe4d7,#f7f2ea);border:1px solid var(--line);overflow:hidden}
+    .hero-art::after{content:"";position:absolute;inset:0;background:
+      radial-gradient(600px 220px at 120% 10%, rgba(185,138,93,.35),transparent 60%),
+      radial-gradient(300px 200px at -10% 100%, rgba(123,75,42,.25),transparent 60%)
+    }
+    .art-cup{position:absolute;inset:auto 12% -12% auto;width:46%;aspect-ratio:1/1;border-radius:24px;background:linear-gradient(135deg,#fff,#f1ede7);border:1px solid var(--line);box-shadow:0 20px 60px rgba(0,0,0,.08)}
+    .art-beans{position:absolute;left:-40px;top:20px;width:220px;height:220px;background:radial-gradient(circle at 30% 30%, #6b3f23, #3a2415 60%);filter:blur(18px);opacity:.25;border-radius:50%}
+
+    /* Sections */
+    section{padding:28px 0}
+    .section-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:12px}
+    .section-head h2{margin:0;font-size:clamp(22px,3vw,30px)}
+    .section-head p{margin:0;color:var(--muted)}
+
+    /* Category cards */
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .12s ease, box-shadow .12s ease}
+    .card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.06)}
+    .thumb{height:160px;background:linear-gradient(135deg,#f3ede6,#e7dfd5)}
+    .card .body{padding:14px}
+    .chip{display:inline-block;background:#fff5eb;border:1px solid #ffe2c2;color:#6b3f23;border-radius:999px;padding:4px 10px;font-size:.85rem}
+
+    /* Article list */
+    .post{display:grid;grid-template-columns:160px 1fr;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+    .post .thumb{height:120px}
+    @media (max-width:560px){.post{grid-template-columns:1fr}.post .thumb{height:180px}}
+
+    /* Carousel */
+    .carousel{position:relative}
+    .carousel-track{display:flex;gap:16px;overflow:auto;padding-bottom:4px;scroll-snap-type:x mandatory}
+    .carousel-track > a{scroll-snap-align:start;min-width:260px}
+    .car-ctrl{position:absolute;inset:calc(50% - 20px) 0 auto 0;display:flex;justify-content:space-between;pointer-events:none}
+    .car-btn{pointer-events:auto;appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border-radius:50%;width:40px;height:40px;font-weight:900}
+
+    /* Newsletter */
+    .nl{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:center;background:linear-gradient(135deg,#fff,#f5efe6);border:1px solid var(--line);border-radius:16px;padding:18px}
+    .nl form{display:flex;gap:10px;flex-wrap:wrap}
+    .input{flex:1;min-width:220px;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:#fff}
+    .note{color:var(--muted);font-size:.9rem}
+
+    /* Footer */
+    footer{margin-top:26px;border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:.95rem}
+    footer a{color:inherit;text-decoration:none}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container topbar">
+      <a class="brand" href="#" aria-label="Lahodná volba – domů">
+        <div class="logo" aria-hidden="true">LV</div>
+        <div class="title">Lahodná volba</div>
+      </a>
+
+      <nav aria-label="Hlavní navigace">
+        <ul>
+          <li><a href="#kategorie">Kategorie</a></li>
+          <li><a href="#tipy">Tipy redakce</a></li>
+          <li><a href="#recenze">Recenze</a></li>
+          <li><a href="#projekty">AO projekty</a></li>
+          <li><a href="#newsletter">Newsletter</a></li>
+        </ul>
+      </nav>
+
+      <div class="hamb">
+        <button id="hambBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Otevřít menu">☰</button>
+      </div>
+    </div>
+
+    <div id="mobileMenu" class="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobilní menu">
+      <a href="#kategorie" onclick="closeMenu()">Kategorie</a>
+      <a href="#tipy" onclick="closeMenu()">Tipy redakce</a>
+      <a href="#recenze" onclick="closeMenu()">Recenze</a>
+      <a href="#projekty" onclick="closeMenu()">AO projekty</a>
+      <a href="#newsletter" onclick="closeMenu()">Newsletter</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-wrap">
+        <div>
+          <span class="badge">⭐️ Výběr redakce • Každý den má svou lahodnou volbu</span>
+          <h1 class="h1">Magazín o chuti a stylu. <br>Vybíráme to nejlepší: káva, rumy, vína a delikatesy.</h1>
+          <p class="lead">Nezávislé recenze, praktické tipy, dárkové sady a recepty. Vše přehledně, česky a bez balastu.</p>
+          <div class="cta">
+            <a class="btn btn-brand" href="#tipy">Prozkoumat tipy</a>
+            <a class="btn btn-ghost" href="#newsletter">Chci novinky</a>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="art-beans"></div>
+          <div class="art-cup"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KATEGORIE -->
+    <section id="kategorie">
+      <div class="container">
+        <div class="section-head">
+          <h2>Kategorie</h2>
+          <p>Vyber si chuť – od kávy po rumy.</p>
+        </div>
+        <div class="grid grid-4">
+          <a class="card" href="#recenze" aria-label="Káva – podívat se na obsah">
+            <div class="thumb" style="background-image:linear-gradient(135deg,#f2e7dc,#e3d3c2),url('');background-size:cover"></div>
+            <div class="body">
+              <div class="chip">Káva</div>
+              <h3>Pražená zrna & kapsle</h3>
+              <p class="muted">Testy, metody přípravy a domácí espresso.</p>
+            </div>
+          </a>
+          <a class="card" href="#recenze" aria-label="Rumy – podívat se na obsah">
+            <div class="thumb" style="background-image:linear-gradient(135deg,#efe4d7,#e5d1bd)"></div>
+            <div class="body">
+              <div class="chip">Rumy</div>
+              <h3>Tmavé, zlaté, ochucené</h3>
+              <p class="muted">Srovnání značek, dárkové sady, sklenice.</p>
+            </div>
+          </a>
+          <a class="card" href="#recenze" aria-label="Víno – podívat se na obsah">
+            <div class="thumb" style="background-image:linear-gradient(135deg,#f0e6ea,#e2d1d9)"></div>
+            <div class="body">
+              <div class="chip">Víno</div>
+              <h3>Morava & svět</h3>
+              <p class="muted">Degustace, párování s jídlem, archivace.</p>
+            </div>
+          </a>
+          <a class="card" href="#recenze" aria-label="Delikatesy – podívat se na obsah">
+            <div class="thumb" style="background-image:linear-gradient(135deg,#eef1e6,#dde3ce)"></div>
+            <div class="body">
+              <div class="chip">Delikatesy</div>
+              <h3>Med, čokoláda, sýry</h3>
+              <p class="muted">Lokální producenti, dárkové koše, recepty.</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIPY REDAKCE / CAROUSEL -->
+    <section id="tipy">
+      <div class="container">
+        <div class="section-head">
+          <h2>Tipy redakce</h2>
+          <p>Pečlivě vybrané novinky, které stojí za ochutnání.</p>
+        </div>
+        <div class="carousel">
+          <div class="car-ctrl">
+            <button class="car-btn" onclick="scrollCar(-1)" aria-label="Předchozí">‹</button>
+            <button class="car-btn" onclick="scrollCar(1)" aria-label="Další">›</button>
+          </div>
+          <div id="car" class="carousel-track">
+            <a class="card" href="#" target="_blank" rel="noopener">
+              <div class="thumb"></div>
+              <div class="body">
+                <div class="chip">Káva</div>
+                <h3>Domácí espresso do 10 tisíc</h3>
+                <p class="muted">3 kávovary, které dávají smysl (affil odkazy).</p>
+              </div>
+            </a>
+            <a class="card" href="#" target="_blank" rel="noopener">
+              <div class="thumb"></div>
+              <div class="body">
+                <div class="chip">Rumy</div>
+                <h3>Dárkové sady do 1500 Kč</h3>
+                <p class="muted">Elegantní tipy pro narozeniny i Vánoce.</p>
+              </div>
+            </a>
+            <a class="card" href="#" target="_blank" rel="noopener">
+              <div class="thumb"></div>
+              <div class="body">
+                <div class="chip">Víno</div>
+                <h3>Moravští šampioni roku</h3>
+                <p class="muted">Výběr oceněných vín a kde je koupit.</p>
+              </div>
+            </a>
+            <a class="card" href="#" target="_blank" rel="noopener">
+              <div class="thumb"></div>
+              <div class="body">
+                <div class="chip">Delikatesy</div>
+                <h3>Čokolády s vysokým podílem kakaa</h3>
+                <p class="muted">Srovnání 85–100 % – chuť vs. cena.</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECENZE / LIST -->
+    <section id="recenze">
+      <div class="container">
+        <div class="section-head">
+          <h2>Nejnovější recenze</h2>
+          <p>Prakticky, stručně a bez reklamního balastu.</p>
+        </div>
+        <div class="grid grid-3">
+          <article class="post">
+            <div class="thumb"></div>
+            <div class="body" style="padding:14px">
+              <h3>Kávovar pro začátek: který je „ta volba“?</h3>
+              <p class="muted">Základní přehled pákových kávovarů do 8 000 Kč. Kdy má smysl automat?</p>
+              <a href="#" class="btn btn-ghost" style="padding:8px 10px">Číst recenzi</a>
+            </div>
+          </article>
+          <article class="post">
+            <div class="thumb"></div>
+            <div class="body" style="padding:14px">
+              <h3>Rum Guatemala vs. Dominikánská republika</h3>
+              <p class="muted">Srovnáváme styl, sladkost a vhodnost na dárky. Co chutná laikům?</p>
+              <a href="#" class="btn btn-ghost" style="padding:8px 10px">Číst recenzi</a>
+            </div>
+          </article>
+          <article class="post">
+            <div class="thumb"></div>
+            <div class="body" style="padding:14px">
+              <h3>Domácí cold brew: 5 minut práce</h3>
+              <p class="muted">Levně, snadno a chutně. Postup, poměry a uchování.</p>
+              <a href="#" class="btn btn-ghost" style="padding:8px 10px">Číst recept</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- AO PROJEKTY PROPOJENÍ -->
+    <section id="projekty">
+      <div class="container">
+        <div class="section-head">
+          <h2>AO propojení</h2>
+          <p>Centrální uzel pro tvoje gastro projekty.</p>
+        </div>
+        <div class="grid grid-4">
+          <a class="card" href="https://www.gurmao.cz" target="_blank" rel="noopener">
+            <div class="thumb"></div>
+            <div class="body"><div class="chip">Gurmao.cz</div><h3>Delikatesy & dárkové koše</h3></div>
+          </a>
+          <a class="card" href="https://www.vinao.cz" target="_blank" rel="noopener">
+            <div class="thumb"></div>
+            <div class="body"><div class="chip">Vinao.cz</div><h3>Vína & degustace</h3></div>
+          </a>
+          <a class="card" href="https://www.rumao.cz" target="_blank" rel="noopener">
+            <div class="thumb"></div>
+            <div class="body"><div class="chip">Rumao.cz</div><h3>Rumy & sklenice</h3></div>
+          </a>
+          <a class="card" href="#" target="_blank" rel="noopener">
+            <div class="thumb"></div>
+            <div class="body"><div class="chip">Burgrio.cz</div><h3>Street food tipy</h3></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section id="newsletter">
+      <div class="container">
+        <div class="nl">
+          <div>
+            <h2>Zůstaň v obraze</h2>
+            <p class="lead">1× za 14 dní výběr toho nejlahodnějšího. Žádný spam, jen poctivý obsah.</p>
+            <p class="note">Odesláním souhlasíš se zpracováním e‑mailu pro účely zasílání novinek. Kdykoli se můžeš odhlásit.</p>
+          </div>
+          <form onsubmit="event.preventDefault(); alert('Díky! Potvrdíme odběr e‑mailem.');">
+            <input class="input" type="email" name="email" placeholder="tvůj@email.cz" required aria-label="E-mail pro odběr" />
+            <button class="btn btn-brand" type="submit" aria-label="Přihlásit se k odběru">Odebírat</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container" style="display:flex;gap:20px;flex-wrap:wrap;justify-content:space-between;align-items:center">
+      <div>© <span id="yr"></span> Lahodná volba • Vybíráme poctivě a bez kompromisů.</div>
+      <div style="display:flex;gap:14px">
+        <a href="#">Kontakt</a>
+        <a href="#">Redakční kodex</a>
+        <a href="#">Cookies</a>
+        <a href="#">Zásady ochrany údajů</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Rok ve footeru
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // Hamburger
+    const hambBtn = document.getElementById('hambBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    function closeMenu(){
+      mobileMenu.classList.remove('open');
+      hambBtn.setAttribute('aria-expanded','false');
+    }
+    hambBtn.addEventListener('click', () => {
+      const opened = mobileMenu.classList.toggle('open');
+      hambBtn.setAttribute('aria-expanded', opened ? 'true' : 'false');
+    });
+    // zavřít menu při scrollu / kliknutí mimo
+    window.addEventListener('scroll', closeMenu);
+    window.addEventListener('click', (e)=>{
+      if(!mobileMenu.contains(e.target) && e.target!==hambBtn){ closeMenu(); }
+    });
+
+    // Carousel jednoduché posouvání
+    const car = document.getElementById('car');
+    function scrollCar(dir){ car.scrollBy({left: dir * 280, behavior:'smooth'}); }
+  </script>
+</body>
+</html>
